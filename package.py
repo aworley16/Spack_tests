@@ -31,10 +31,13 @@ class Mpipcl(CMakePackage):
     version("1.0.0", sha256="e80b32ba7fc8f45cbd4295607c48bd100b1c2566a5fec143e0fb5a8f9d1b49f0")
 
 
-    variant("static_libs", default=False, description="Build static MPIPCL library")
+    variant("static_libs", default=False, description="Build static MPIPCL library instead of shared library")
     variant("debug", default=False, description="Turn on debug statments inside library")
     variant("examples", default=False, description="Build Example programs")
-    variant("Unique_names", default=False, description="Changes the types and names of functions to MPIP instead of MPIX")
+    variant("unique_names", default=False, description="Changes the types and names of functions to MPIP instead of MPIX")
+
+    depends_on("cmake@3.17:", type="build")
+    depends_on("mpi")
 
     def cmake_args(self):
         args = []
