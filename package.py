@@ -1,77 +1,48 @@
-# Copyright Spack Project Developers. See COPYRIGHT file for details.
+# Copyright 2013-2024 Lawrence Livermore National Security, LLC and other
+# Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-# ----------------------------------------------------------------------------
-# If you submit this package back to Spack as a pull request,
-# please first remove this boilerplate and all FIXME comments.
-#
-# This is a template package file for Spack.  We've put "FIXME"
-# next to all the things you'll want to change. Once you've handled
-# them, you can save this file and test your package like this:
-#
-#     spack install mpipcl
-#
-# You can edit this file again by typing:
-#
-#     spack edit mpipcl
-#
-# See the Spack documentation for more information on packaging.
-# ----------------------------------------------------------------------------
 
-from spack_repo.builtin.build_systems.cmake import CMakePackage
+
 from spack.package import *
 
 
 class Mpipcl(CMakePackage):
-    """FIXME: Put a proper description of your package here."""
+    """An open source shared library that implements the partitioned communication interface approved in MPI 4.0
 
-    # FIXME: Add a proper url for your package's homepage here.
-    homepage = "https://www.github.com/mpi-advance/MPIPCL/"
+        mpipcl is a part of the MPI-Advance Project developed and maintained by CUP-ECS.
+    """
+
+    homepage = "https://github.com/mpi-advance/MPIPCL.git"
+    url = "https://github.com/mpi-advance/MPIPCL/archive/refs/tags/v1.3.0.tar.gz"
     git = "https://github.com/mpi-advance/MPIPCL.git"
 
-    # FIXME: Add a list of GitHub accounts to
-    # notify when the package is updated.
-    # maintainers("github_user1", "github_user2")
+    maintainers("aworley16")
 
-    # FIXME: Add the SPDX identifier of the project's license below.
-    # See https://spdx.org/licenses/ for a list. Upon manually verifying
-    # the license, set checked_by to your Github username.
     license("BSD-3-Clause", checked_by="aworley16")
 
-    version("1.3.0", commit="7c205e3")
+    version("testing", branch="spack-target")
 
-    depends_on("c", type="build")
+    version("1.3.0", sha256="ad65f5b87e57530927d1607fd7856f8d29bc34d4198490d34a70edefcd16f02a")
+    version("1.2.0", sha256="6d28fdb452ed75a6c5623ac684aed39a71592524afca5804b39102d7a46bb6b8")
+    version("1.1.2", sha256="37e842b0a1733df7e88df47cfbe95064077befbcc8bdfeb9fc0a9014c6e38a47")
+    version("1.1.1", sha256="f620051102a55a2d613757bd78b31d1ea29efd29b897182bc40048a47fd37c75")
+    version("1.0.0", sha256="e80b32ba7fc8f45cbd4295607c48bd100b1c2566a5fec143e0fb5a8f9d1b49f0")
 
-    # FIXME: Add dependencies if required.
-    depends_on("mpi")
-    depends_on("cmake @3.17:")
 
-    variant("static_libs", default=False, description="Build MPIPCL static library")
-    variant("dynamic_libs", default=True, description="Build MPIPCL shared library")        
-    variant("debug", default=False, description="Turn on debug statments")
+    variant("static_libs", default=False, description="Build static MPIPCL library")
+    variant("debug", default=False, description="Turn on debug statments inside library")
     variant("examples", default=False, description="Build Example programs")
-    variant("Unique_names", default=False, description="Changes the types and names of functions to MPIP in)stead of MPIX")
+    variant("Unique_names", default=False, description="Changes the types and names of functions to MPIP instead of MPIX")
 
     def cmake_args(self):
-        # FIXME: Add arguments other than
-        # FIXME: CMAKE_INSTALL_PREFIX and CMAKE_BUILD_TYPE
-        # FIXME: If not needed delete this function
         args = []
-        print("HELLO WORLD")
         if self.spec.satisfies("+static_libs"):
-            print("HELLO--STATIC")
-            args.append("-DSTATIC_LIBS=ON")
-
-        if self.spec.satisfies("~dynamic_libs"):
             args.append("-DDYNAMIC_LIBS=OFF")
-            print("HELLO--DYNAMIC")
         if self.spec.satisfies("+debug"):
             args.append("-DCMAKE_BUILD_TYPE=DEBUG")
-            print("HELLO-- DEBUG")
         if self.spec.satisfies("+examples"):
             args.append("-DBUILD_EXAMPLES=ON")
-            print("HELLO-- EXAMPLES")
-
-
+            args.append("-DEXAMPLES_TO_BIN=ON")
         return args
