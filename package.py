@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-
+from spack_repo.builtin.build_systems.cmake import CMakePackage
 
 from spack.package import *
 
@@ -34,11 +34,15 @@ class Mpipcl(CMakePackage):
     variant("static_libs", default=False, description="Build static MPIPCL library instead of shared library")
     variant("debug", default=False, description="Turn on debug statments inside library")
     variant("examples", default=False, description="Build Example programs")
-    variant("unique_names", default=False, description="Changes the types and names of functions to MPIP instead of MPIX")
+    variant("unique_names", default=False, description="Changes the names of functions to use MPIP instead of MPIX")
 
-    depends_on("cmake@3.17:", type="build")
+    conflicts(
+        "+examples", when="+unique_names", msg="No examples currently exist when using +unique_names"
+    )
+
+    depends_on("cmake")
     depends_on("mpi")
-
+   
     def cmake_args(self):
         args = []
         if self.spec.satisfies("+static_libs"):
@@ -48,4 +52,7 @@ class Mpipcl(CMakePackage):
         if self.spec.satisfies("+examples"):
             args.append("-DBUILD_EXAMPLES=ON")
             args.append("-DEXAMPLES_TO_BIN=ON")
+        if self.spec.satisfies("+unique_names"):
+            args.append("-DUNIQUE_NAMES=ON")
+
         return args
