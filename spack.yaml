@@ -1,0 +1,39 @@
+spack:
+  specs:
+  - cuda@12.6
+
+  - ucx +ib_hw_tm +gdrcopy
+  - openmpi@4.1.4 +cuda cuda_arch=86 fabrics=ucx
+  - heffte +fftw +cuda cuda_arch=86
+  - kokkos +hwloc +cuda +cuda_lambda +wrapper cuda_arch=86 cxxstd=20
+  - hdf5 +mpi
+  - googletest
+  - mpiadvance +cuda
+  - mpiadvance +cuda +tests
+  concretizer:
+    unify: when_possible
+  view: true
+  packages:
+    all:
+        variants:
+        - cuda_arch=75
+    cuda: 
+        buildable: false
+        externals: 
+        -   spec: cuda@12.6
+        
+    gcc:
+      externals:
+      - spec: gcc@11.4.0 languages='c,c++,fortran'
+        prefix: /usr
+        extra_attributes:
+          compilers:
+            c: /usr/bin/gcc
+            cxx: /usr/bin/g++
+            fortran: /usr/bin/gfortran
+          flags: {}
+          environment: {}
+          extra_rpaths: []
+  develop:
+    mpiadvance:
+      spec: mpiadvance@=develop
